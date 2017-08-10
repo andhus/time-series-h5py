@@ -2,11 +2,12 @@ from __future__ import print_function, division
 
 from operator import methodcaller
 
+import numpy as np
 import pandas as pd
 
-from tsh5py.utils import TimeInterval
 from tsh5py.index import TSIndex
 from tsh5py.tssource import TSSource
+from tsh5py.utils import TimeInterval
 
 
 class TSDataset(object):
@@ -14,13 +15,32 @@ class TSDataset(object):
     _index_key = 'index'
     _sources_key = 'sources'
 
-    def __init__(self, group):
+    def __init__(
+        self,
+        group,
+        dtype=None,
+        compression=None,
+        compression_opts=None
+    ):
         self._group = group
         # self._remote_index = remote_index  # TODO...
+        self._data_hdf5_opts = dict(
+            dtype=dtype,
+            compression=compression,
+            compression_opts=compression_opts
+        )
 
     @classmethod
-    def create(cls, group, partition_offset='24H'):
-        tsds = TSDataset(group)
+    def create(
+        cls,
+        group,
+        partition_offset='24H',
+        dtype=np.dtype('float32'),
+        compression='gzip',
+        compression_opts=9
+
+    ):
+        tsds = TSDataset(group, dtype, compression, compression_opts)
         tsds.create_index(partition_offset)
         return tsds
 
@@ -41,7 +61,8 @@ class TSDataset(object):
         source = TSSource.create(
             group=self._group.require_group(self._sources_key).create_group(name),
             index=self.require_index(),
-            stype=stype
+            stype=stype,
+            **self._data_hdf5_opts
         )
         return source
 
@@ -50,7 +71,8 @@ class TSDataset(object):
         if name in sources_group:
             source = TSSource.from_group_and_index(
                 group=sources_group[name],
-                index=self.require_index()
+                index=self.require_index(),
+                **self._data_hdf5_opts
             )
             if stype:
                 assert source.stype is stype
