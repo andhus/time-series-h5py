@@ -86,13 +86,11 @@ class PartitionedTSData(TimeInterval):
         group,
         start,
         end,
-        dtype=None,
         compression=None,
         compression_opts=None
     ):
         super(PartitionedTSData, self).__init__(start, end)
         self._group = group
-        self._dtype = dtype
         self._compression = compression
         self._compression_opts = compression_opts
 
@@ -142,7 +140,7 @@ class PartitionedTSData(TimeInterval):
                 partition_ds = self._group.create_dataset(
                     name=partition_key,
                     shape=partition_array.shape,
-                    dtype=self._dtype,
+                    dtype=partition_array.dtype,
                     compression=self._compression,
                     compression_opts=self._compression_opts
                 )

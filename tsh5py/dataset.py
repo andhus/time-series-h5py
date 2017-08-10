@@ -18,14 +18,12 @@ class TSDataset(object):
     def __init__(
         self,
         group,
-        dtype=None,
         compression=None,
         compression_opts=None
     ):
         self._group = group
         # self._remote_index = remote_index  # TODO...
         self._data_hdf5_opts = dict(
-            dtype=dtype,
             compression=compression,
             compression_opts=compression_opts
         )
@@ -35,12 +33,10 @@ class TSDataset(object):
         cls,
         group,
         partition_offset='24H',
-        dtype=np.dtype('float32'),
         compression='gzip',
         compression_opts=9
-
     ):
-        tsds = TSDataset(group, dtype, compression, compression_opts)
+        tsds = TSDataset(group, compression, compression_opts)
         tsds.create_index(partition_offset)
         return tsds
 
