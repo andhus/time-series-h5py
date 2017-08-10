@@ -142,7 +142,7 @@ class PartitionedTSData(TimeInterval):
                 partition_ds = self._group.create_dataset(
                     name=partition_key,
                     shape=partition_array.shape,
-                    dtype=partition_array.dtype,  # TODO use object dtype?
+                    dtype=self._dtype,
                     compression=self._compression,
                     compression_opts=self._compression_opts
                 )
