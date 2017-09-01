@@ -81,9 +81,18 @@ class PartitionedTSData(TimeInterval):
     def partition_offset(self):
         raise NotImplementedError('')
 
-    def __init__(self, group, start, end):
+    def __init__(
+        self,
+        group,
+        start,
+        end,
+        compression=None,
+        compression_opts=None
+    ):
         super(PartitionedTSData, self).__init__(start, end)
         self._group = group
+        self._compression = compression
+        self._compression_opts = compression_opts
 
     @property
     def dtype(self):
@@ -132,6 +141,8 @@ class PartitionedTSData(TimeInterval):
                     name=partition_key,
                     shape=partition_array.shape,
                     dtype=partition_array.dtype,
+                    compression=self._compression,
+                    compression_opts=self._compression_opts
                 )
                 partition_ds[:] = partition_array
 

@@ -31,11 +31,12 @@ class TSSource(PartitionedTSData):
         }
         return stype_to_source_class[stype]
 
-    def __init__(self, group, index):
+    def __init__(self, group, index, **kwargs):
         super(TSSource, self).__init__(
             group,
             start=None,
-            end=None
+            end=None,
+            **kwargs
         )
         self.index = index
 
@@ -52,15 +53,17 @@ class TSSource(PartitionedTSData):
         return self.index.partition_offset
 
     @classmethod
-    def create(cls, group, index, stype):
+    def create(cls, group, index, stype, **kwargs):
         if stype not in cls._stype_to_str.keys():
             raise TypeError('')
         cls._set_stype(group, stype)
-        return cls.from_group_and_index(group, index)
+        return cls.from_group_and_index(group, index, **kwargs)
 
     @classmethod
-    def from_group_and_index(cls, group, index):
-        return cls.get_source_class(cls._get_stype(group))(group, index)
+    def from_group_and_index(cls, group, index, **kwargs):
+        return cls.get_source_class(cls._get_stype(group))(
+            group, index, **kwargs
+        )
 
     @classmethod
     def _get_stype(cls, group):
@@ -254,8 +257,8 @@ class SeriesSource(TSSource):
 
     _name_key = '_name'
 
-    def __init__(self, group, index):
-        super(SeriesSource, self).__init__(group, index)
+    def __init__(self, group, index, **kwargs):
+        super(SeriesSource, self).__init__(group, index, **kwargs)
         assert self.stype is pd.Series
 
     @property
@@ -288,8 +291,8 @@ class DataFrameSource(TSSource):
 
     _columns_key = '_name'
 
-    def __init__(self, group, index):
-        super(DataFrameSource, self).__init__(group, index)
+    def __init__(self, group, index, **kwargs):
+        super(DataFrameSource, self).__init__(group, index, **kwargs)
         assert self.stype is pd.DataFrame
 
     @property
