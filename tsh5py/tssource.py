@@ -289,7 +289,7 @@ class SeriesSource(TSSource):
 
 class DataFrameSource(TSSource):
 
-    _columns_key = '_name'
+    _columns_key = '_columns'
 
     def __init__(self, group, index, **kwargs):
         super(DataFrameSource, self).__init__(group, index, **kwargs)
