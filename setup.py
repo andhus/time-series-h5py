@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.1.0.dev3'
+VERSION = '0.1.0'
 
 setup(
     name='time-series-h5py',
